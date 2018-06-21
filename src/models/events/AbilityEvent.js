@@ -1,4 +1,4 @@
-import Event from './Event.js'
+import Event from './Event'
 
 export default class AbilityEvent extends Event {
     constructor(id, type, user, target, startTime, isActive = true) {

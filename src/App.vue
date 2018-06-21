@@ -2,17 +2,19 @@
   <div id="app">
     <MysteryHeader />
     <Navigation />
-    <MainContent />
+    <!-- <MainContent /> -->
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MysteryHeader from './components/MysteryHeader.vue'
+import Navigation from "./components/Navigation.vue";
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    MysteryHeader,
+    Navigation
   }
 }
 </script>
