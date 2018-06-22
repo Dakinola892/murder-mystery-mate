@@ -1,20 +1,19 @@
 <template>
   <div id="app">
-    <MysteryHeader />
-    <Navigation />
+    <AppHeader />
     <!-- <MainContent /> -->
   </div>
 </template>
 
 <script>
-import MysteryHeader from './components/MysteryHeader.vue'
-import Navigation from "./components/Navigation.vue";
+import AppHeader from './components/AppHeader.vue'
+import AppNavigation from "./components/AppNavigation.vue";
 
 export default {
   name: 'app',
   components: {
-    MysteryHeader,
-    Navigation
+    AppHeader,
+    AppNavigation
   }
 }
 </script>

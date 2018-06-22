@@ -13,4 +13,4 @@ const EventTypes = Object.freeze({
     'customEvent': 10
 });
 
-export default EventTypes
+export default EventTypes;
