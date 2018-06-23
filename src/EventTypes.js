@@ -10,7 +10,8 @@ const EventTypes = Object.freeze({
     'message': 7,
     'announcement': 8,
     'customAbility': 9,
-    'customEvent': 10
+    'customEvent': 10,
+    'death': 11
 });
 
 export default EventTypes;

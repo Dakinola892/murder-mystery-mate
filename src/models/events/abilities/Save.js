@@ -1,9 +1,9 @@
-import AbilityEvent from "../AbilityEvent.js"
-import EventTypes from "../../../EventTypes.js"
+import AbilityEvent from "../AbilityEvent"
+import EventTypes from "../../../EventTypes"
 
 export default class Save extends AbilityEvent {
-    constructor(id, user, target, startTime, isActive = true, kill) {
-        super(id, EventTypes.save, user, target, startTime, isActive);
+    constructor(id, user, target, time, isActive = false, kill) {
+        super(id, EventTypes.save, user, target, time, isActive);
         this.kill = kill;
     }
     

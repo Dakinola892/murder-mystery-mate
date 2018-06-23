@@ -1,19 +1,19 @@
 <template>
   <div id="app">
     <AppHeader />
-    <!-- <MainContent /> -->
+    <AppContent />
   </div>
 </template>
 
 <script>
-import AppHeader from './components/AppHeader.vue'
-import AppNavigation from "./components/AppNavigation.vue";
+import AppHeader from './components/AppHeader.vue';
+import AppContent from './components/AppContent.vue';
 
 export default {
   name: 'app',
   components: {
     AppHeader,
-    AppNavigation
+    AppContent
   }
 }
 </script>

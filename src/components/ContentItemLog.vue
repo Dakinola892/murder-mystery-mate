@@ -1,5 +1,8 @@
 <template>
-    <div>Item Log</div>
+    <div>
+        <h1>Item Log</h1>
+        <h2>TBD by Dimitri</h2>
+    </div>
 </template>
 
 <script>
