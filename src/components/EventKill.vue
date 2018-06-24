@@ -7,7 +7,7 @@
         <div class="content">
             <div class="date">{{ event.startTime }}</div>
             <div class="summary"> <span v-html="headlineMessage"></span></div>
-            <div class="extra text">{{ outcomeMessage }} <a></a> </div>
+            <div class="extra text"><a>{{ outcomeMessage }}</a> </div>
         </div>
   </div>
 </template>

@@ -19,7 +19,7 @@ const Mystery = new Vuex.Store({
     currentTime: new Date(),
     characters: testCharacters,
     events: [],
-    currentPage: 0
+    currentPage: 1
   },
   mutations: {
     setCurrentPage(state, page) {
