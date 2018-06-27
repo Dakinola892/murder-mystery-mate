@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import Kill from "../models/events/abilities/Kill";
 import Silence from "../models/events/abilities/Silence";
 
 export default {
@@ -27,7 +26,6 @@ export default {
             required: true
         }
     }
-
 }
 </script>
 

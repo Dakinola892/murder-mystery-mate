@@ -1,6 +1,32 @@
 <template>
-    <div class="ui large feed container">
-        <component v-for="event in events" :key="event.id" :is="eventType(event.type)" v-bind:event="event"></component>
+    <div class="ui container">
+        <div class="ui container">
+            <button class="ui large right labeled icon button" id="btn-filter">
+                <i class="icon filter"/>Filter
+            </button>
+            <button class="ui large red button" @click="showModal= !showModal" id="btn-new-event">
+                <i class="icon plus"/>Record New Event
+            </button>
+        </div>
+        <div class="ui large feed container">
+            <component v-for="event in events" :key="event.id" :is="eventType(event.type)" v-bind:event="event"></component>
+        </div>
+        <modal v-model="showModal">
+
+            <p slot="header">Confirmation needed</p>
+
+            <p slot="content">Do you want to continue?</p>
+
+            <template slot="actions">
+                <div class="ui black deny button" @click="showModal=false">
+                No
+                </div>
+                <div class="ui positive right button" @click="confirm">
+                Yes
+                </div>
+            </template>
+
+        </modal>
     </div>
 </template>
 
@@ -9,12 +35,17 @@ import EventTypes from "../EventTypes";
 
 import Item from "../models/Item";
 
+import modal from "vue-semantic-modal";
+import _ from 'lodash';
+
 import Kill from "../models/events/abilities/Kill";
 import Save from "../models/events/abilities/Save";
 import Protect from "../models/events/abilities/Protect";
 import Silence from "../models/events/abilities/Silence";
 import Steal from "../models/events/abilities/Steal";
 import Truthtell from "../models/events/abilities/Truthtell";
+import Coerce from "../models/events/abilities/Coerce";
+import Message from "../models/events/abilities/Message";
 
 import EventKill from "./EventKill.vue";
 import EventSave from "./EventSave.vue";
@@ -22,6 +53,8 @@ import EventProtect from "./EventProtect.vue";
 import EventSilence from "./EventSilence.vue";
 import EventSteal from "./EventSteal.vue";
 import EventTruthtell from "./EventTruthtell.vue";
+import EventCoerce from "./EventCoerce.vue";
+import EventMessage from "./EventMessage.vue";
 
 let testKill = new Kill(0, "Annie Adams", "Carrie Cross", "00:31:57", true, 384);
 let testSave = new Save(1, "Fred Farnsworth", "Carrie Cross", "00:39:19", false, testKill);
@@ -45,14 +78,34 @@ testTruthtell.confirmationTime = "01:12:27";
 testTruthtell.question = "What did you see last night";
 testTruthtell.answer = "A hooded figure";
 
+let testCoerce = new Coerce(9, "David Downs", "Gary Geurich", "01:13:12", true, "", "Save", "Carrie Cross");
+testCoerce.isActive = false;
+testCoerce.isSuccessful = true;
+
+let testMessage = new Message(10, "Gary Geurchich", undefined, "01:18:19", true, "01:12:00", "I love you guys");
+let testMessage2 = new Message(11, "Gary Geurchich", "Harry Hunt", "01:20:10", true, "01:21:52", "except you");
+testMessage.isActive = false;
+
 export default {
     name: "ContentEventTimeline",
     data() {
         return {
-            events: [testKill, testSave, testKill2, testSave2, testProtect, testSilence, testSteal, testSteal2, testTruthtell]
+            showModal: false,
+            confirmed: true,
+            events: [testKill, testSave, testKill2, testSave2, testProtect, testSilence, testSteal, testSteal2, testTruthtell, testCoerce, testMessage, testMessage2]
         }
     },
+    created() {
+        console.log(_.isEmpty() ? 'Lodash is available here!' : 'Uh oh..');
+    },
+    components: {
+        modal
+    },
     methods: {
+        confirm () {
+            this.confirmed = true;
+            this.showModal = false;
+        },
         eventType(type) {
             switch(type) {
                 case EventTypes.kill:
@@ -67,6 +120,11 @@ export default {
                     return EventSteal;
                 case EventTypes.truthtell:
                     return EventTruthtell;
+                case EventTypes.coerce:
+                    return EventCoerce;
+                case EventTypes.message:
+                case EventTypes.announcement:
+                    return EventMessage;
                 default:
                     return EventKill;
             }
@@ -76,5 +134,14 @@ export default {
 </script>
 
 <style scoped>
+    #btn-filter {
+        margin-right: 20px;
+        padding-right: 100px;
+        padding-left: 100px;
+    }
 
+    modal {
+        margin: 50%;
+        margin-top: 0px;
+    }
 </style>

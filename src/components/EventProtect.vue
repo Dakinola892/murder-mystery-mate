@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import Kill from "../models/events/abilities/Kill";
 import Protect from "../models/events/abilities/Protect";
 
 export default {
