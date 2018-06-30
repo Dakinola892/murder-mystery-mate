@@ -1,33 +1,30 @@
 <template>
-    <modal v-model="showModal">
-
-        <p slot="header">Confirmation needed</p>
-
-        <p slot="content">Do you want to continue?</p>
-
-        <template slot="actions">
-            <div class="ui black deny button" @click="showModal=false">
-            No
-            </div>
-            <div class="ui positive right button" @click="confirm">
-            Yes
-            </div>
-        </template>
-
+    <modal name="modal-record-new-event">
+        <modal-page-selector :post-type="postType" @page-change="currentPage = $event" ></modal-page-selector>
+        <modal-page-content :post-type="postType" :page-num="currentPage"></modal-page-content>
     </modal>
 </template>
 
 <script>
-import modal from 'vue-semantic-modal'
+import ModalPageSelector from "./ModalPageSelector.vue";
+import ModalPageContent from "./ModalPageContent.vue";
 
 export default {
+    
     components: {
-        modal
+        ModalPageSelector,
+        ModalPageContent
     },
     data() {
         return {
-            showModal: true,
-            confirmed: true
+            showModal: false,
+            confirmed: false,
+            postType: {
+                ability: 0,
+                custom: 1,
+                note: 2
+            },
+            currentPage: 0
         }
     },
     methods: {

@@ -16,11 +16,6 @@ export default {
         ContentEventTimeline,
         ContentCharacterOverview
     },
-    data() {
-        return {
-
-      }
-    },
     computed: {
         currentPage() {
             const pageNum = this.$store.state.currentPage;
@@ -35,10 +30,7 @@ export default {
                     return ContentEventTimeline;
             }
         }
-    },
-  methods: {
-
-  }
+    }
 }
 </script>
 

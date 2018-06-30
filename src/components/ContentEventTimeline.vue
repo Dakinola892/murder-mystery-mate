@@ -4,29 +4,14 @@
             <button class="ui large right labeled icon button" id="btn-filter">
                 <i class="icon filter"/>Filter
             </button>
-            <button class="ui large red button" @click="showModal= !showModal" id="btn-new-event">
+            <button class="ui large left labeled icon red button" id="btn-new-event" @click="$modal.show('modal-record-new-event')">
                 <i class="icon plus"/>Record New Event
             </button>
         </div>
         <div class="ui large feed container">
             <component v-for="event in events" :key="event.id" :is="eventType(event.type)" v-bind:event="event"></component>
         </div>
-        <modal v-model="showModal">
-
-            <p slot="header">Confirmation needed</p>
-
-            <p slot="content">Do you want to continue?</p>
-
-            <template slot="actions">
-                <div class="ui black deny button" @click="showModal=false">
-                No
-                </div>
-                <div class="ui positive right button" @click="confirm">
-                Yes
-                </div>
-            </template>
-
-        </modal>
+        <modal-new-event></modal-new-event>
     </div>
 </template>
 
@@ -35,7 +20,6 @@ import EventTypes from "../EventTypes";
 
 import Item from "../models/Item";
 
-import modal from "vue-semantic-modal";
 import _ from 'lodash';
 
 import Kill from "../models/events/abilities/Kill";
@@ -55,6 +39,7 @@ import EventSteal from "./EventSteal.vue";
 import EventTruthtell from "./EventTruthtell.vue";
 import EventCoerce from "./EventCoerce.vue";
 import EventMessage from "./EventMessage.vue";
+import ModalNewEvent from "./ModalNewEvent.vue";
 
 let testKill = new Kill(0, "Annie Adams", "Carrie Cross", "00:31:57", true, 384);
 let testSave = new Save(1, "Fred Farnsworth", "Carrie Cross", "00:39:19", false, testKill);
@@ -92,6 +77,12 @@ export default {
         return {
             showModal: false,
             confirmed: true,
+            postType: {
+                ability: 0,
+                custom: 1,
+                note: 2
+            },
+            currentPage: 0,
             events: [testKill, testSave, testKill2, testSave2, testProtect, testSilence, testSteal, testSteal2, testTruthtell, testCoerce, testMessage, testMessage2]
         }
     },
@@ -99,12 +90,16 @@ export default {
         console.log(_.isEmpty() ? 'Lodash is available here!' : 'Uh oh..');
     },
     components: {
-        modal
+        ModalNewEvent
     },
     methods: {
         confirm () {
             this.confirmed = true;
             this.showModal = false;
+        },
+        print(event) {
+            console.log(event);
+            console.log(typeof event);
         },
         eventType(type) {
             switch(type) {
