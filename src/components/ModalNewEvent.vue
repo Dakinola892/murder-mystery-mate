@@ -1,5 +1,5 @@
 <template>
-    <sui-modal v-model="open">
+    <sui-modal @clickAwayModal="$emit('closeModal')" :open="open">
         <modal-page-selector :post-type="postType" @page-change="currentPage = $event" ></modal-page-selector>
         <sui-modal-content>
             <modal-page-content :post-type="postType" :page-num="currentPage"></modal-page-content>

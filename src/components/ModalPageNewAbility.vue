@@ -8,38 +8,21 @@
                 v-model="abilityType"
             />
             <br>
-            <h1 class="ui header">
+            <h1 v-if="isSelection" class="ui header">
                 <img :src="selectedAbility.icon" alt="test" id="ability-icon">
                 {{ selectedAbility.name }}
                 <!-- <div class="ui divider"></div> -->
                 <span class="sub header" v-html="selectedAbility.description"></span>
             </h1>
         </div>
-        <div class="ui divider"></div>
+        <div v-if="isSelection" class="ui divider"></div>
         <div class="ui center aligned container">
 
-            <div v-if="selectedAbility.type == EventTypes.kill">
-                <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> is placing 
-                    <div class="ui right labeled input">
-                        <input type="number" placeholder="No. of kills" v-model="formData.amount">
-                        <div class="ui basic label">{{ killLabel }}</div>
-                    </div> on  
-                <sui-dropdown :options="dropdownCharacters" placeholder="Target" search selection v-model="formData.target"/>
-            </div>
+            <modal-kill-save-maker v-if="killOrSave" 
+            :user.sync="formData.user" :target.sync="formData.target" :amount.sync="formData.amount" :characters="dropdownCharacters" :is-kill="isKill">
+            </modal-kill-save-maker>
 
-           <div v-if="selectedAbility.type == EventTypes.save">
-                <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> is using 
-                    <div class="ui right labeled input">
-                        <input type="number" placeholder="No. of saves" v-model="formData.amount">
-                        <div class="ui basic label">{{ saveLabel }}</div>
-                    </div> on  
-                <sui-dropdown :options="dropdownCharacters" placeholder="Target" search selection v-model="formData.target"/>
-            </div>
-
-            <div v-if="selectedAbility.type == EventTypes.protect">
-                <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> is placing a protect  
-                <sui-dropdown :options="dropdownCharacters" placeholder="Target" search selection v-model="formData.target"/>
-            </div>
+            <modal-protect-maker v-if="selectedAbility.type == EventTypes.protect"></modal-protect-maker>
 
             <div v-if="selectedAbility.type == EventTypes.silence">
                 <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> is silencing
@@ -99,22 +82,35 @@
 </template>
 
 <script>
+import { isEmpty } from "lodash";
 import EventTypes from "../EventTypes";
+import ModalKillSaveMaker from "./ModalKillSaveMaker.vue";
+import ModalProtectMaker from "./ModalProtectMaker.vue";
 
 export default {
     name: "ModalPageNewAbility",
+    components: {
+        ModalKillSaveMaker,
+        ModalProtectMaker
+    },
     computed: {
+        isSelection() {
+            return !(_.isEmpty(this.selectedAbility))
+        },
+        killOrSave() {
+            return this.abilityType == EventTypes.kill || this.abilityType == EventTypes.save;
+        },
+        isKill() {
+            return this.abilityType == EventTypes.kill;
+        },
         useAbilityOn() {
             return this.formData.targetItemOrAbility ? "Target of " + this.abilityNames[this.formData.targetItemOrAbility] : "Secondary Target";
-        },
-        killLabel() {
-            return this.formData.amount == 1 ? "kill" : "kills";
         },
         saveLabel() {
             return this.formData.amount == 1 ? "save" : "saves";
         },
         selectedAbility() {
-            return this.abilties[this.abilityType || 0];
+            return this.abilties[this.abilityType] || {};
         },
         abilityNames() {
             return this.abilties.map(ability => ability.text);
@@ -141,8 +137,15 @@ export default {
             return this.formData.stealingAbility ? this.dropdownAbilities : this.dropdownItems;
         }
     },
+    methods: {
+        selectUser(event) {
+            this.formData.user = event;
+            this.test = event;
+        }
+    },
     data() {
         return {
+            test: 0,
             EventTypes: EventTypes,
             abilityType: null,
             formData: {
@@ -223,6 +226,14 @@ export default {
 <style>
 #ability-icon {
     padding-right: 8px;
+}
+
+#user, #amount-label {
+    margin-right: 4px;
+}
+
+#amount-input, #target {
+    margin-left: 4px;
 }
 </style>
 

@@ -20,9 +20,7 @@
 export default {
     name: "ModalPageSelector",
     props: {
-        postType: {
-            type: Object
-        }
+        postType: Object
     },
     data() {
         return {
