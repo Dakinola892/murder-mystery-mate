@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="ui center aligned container">
         <component :is="currentPage"></component>
     </div>
 </template>
@@ -19,7 +19,8 @@ export default {
     },
     props: {
         pageNum: {
-            type: Number
+            type: Number,
+            default: 0
         }, 
         postType: {
             type: Object

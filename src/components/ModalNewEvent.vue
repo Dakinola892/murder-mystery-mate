@@ -1,8 +1,10 @@
 <template>
-    <modal name="modal-record-new-event">
+    <sui-modal v-model="open">
         <modal-page-selector :post-type="postType" @page-change="currentPage = $event" ></modal-page-selector>
-        <modal-page-content :post-type="postType" :page-num="currentPage"></modal-page-content>
-    </modal>
+        <sui-modal-content>
+            <modal-page-content :post-type="postType" :page-num="currentPage"></modal-page-content>
+        </sui-modal-content>
+    </sui-modal>
 </template>
 
 <script>
@@ -15,6 +17,12 @@ export default {
         ModalPageSelector,
         ModalPageContent
     },
+    props: {
+        open: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             showModal: false,
@@ -24,7 +32,7 @@ export default {
                 custom: 1,
                 note: 2
             },
-            currentPage: 0
+            currentPage: 0,
         }
     },
     methods: {

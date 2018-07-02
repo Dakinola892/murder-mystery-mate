@@ -1,5 +1,6 @@
 export default class Item {
-    constructor(name, owner, history, inPlay = true) {
+    constructor(id, name, owner, history = [], inPlay = true) {
+        this.id = id;
         this.name = name;
         this.owner = owner;
         this.history = history;

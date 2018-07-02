@@ -4,14 +4,14 @@
             <button class="ui large right labeled icon button" id="btn-filter">
                 <i class="icon filter"/>Filter
             </button>
-            <button class="ui large left labeled icon red button" id="btn-new-event" @click="$modal.show('modal-record-new-event')">
+            <button class="ui large left labeled icon red button" id="btn-new-event" @click="showModal = true">
                 <i class="icon plus"/>Record New Event
             </button>
         </div>
         <div class="ui large feed container">
             <component v-for="event in events" :key="event.id" :is="eventType(event.type)" v-bind:event="event"></component>
         </div>
-        <modal-new-event></modal-new-event>
+        <modal-new-event :open="showModal"></modal-new-event>
     </div>
 </template>
 
