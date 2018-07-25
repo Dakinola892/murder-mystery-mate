@@ -18,64 +18,33 @@
         <div v-if="isSelection" class="ui divider"></div>
         <div class="ui center aligned container">
 
-            <modal-kill-save-maker v-if="killOrSave" 
-            :user.sync="formData.user" :target.sync="formData.target" :amount.sync="formData.amount" :characters="dropdownCharacters" :is-kill="isKill">
+            <modal-kill-save-maker v-if="isKillOrSave" 
+            :characters="dropdownCharacters" :user.sync="formData.user" :target.sync="formData.target" :amount.sync="formData.amount" :is-kill="abilityType == EventTypes.kill">
             </modal-kill-save-maker>
 
-            <modal-protect-maker v-if="selectedAbility.type == EventTypes.protect"></modal-protect-maker>
+            <modal-protect-maker v-if="abilityType == EventTypes.protect"
+            :characters="dropdownCharacters" :user.sync="formData.user" :target.sync="formData.target" >
+            </modal-protect-maker>
 
-            <div v-if="selectedAbility.type == EventTypes.silence">
-                <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> is silencing
-                <sui-dropdown :options="dropdownCharacters" placeholder="Target" search selection v-model="formData.target"/> to stop them talking about
-                <div class="ui input">
-                    <input type="text" placeholder="Topic" v-model="formData.topic">
-                </div>
-            </div>
+            <modal-silence-maker v-if="abilityType == EventTypes.silence"
+            :characters="dropdownCharacters" :user.sync="formData.user" :target.sync="formData.target" :topic.sync="formData.topic">
+            </modal-silence-maker>
 
-            <div class="ui form" v-if="selectedAbility.type == EventTypes.steal">
-                <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> attempting to steal a 
-                <span>
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="stealTarget" :value="false" v-model="formData.stealingAbility" checked="true">
-                        <label>Item</label>
-                    </div>
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="stealTarget" :value="true" v-model="formData.stealingAbility">
-                        <label>Ability</label>
-                    </div>
-                </span>
-                <sui-dropdown :options="itemsOrAbilities" placeholder="Target Item/Ability" search selection v-model="formData.targetItemOrAbility"/> <br> 
-                from <sui-dropdown :options="dropdownCharacters" placeholder="Target" search selection v-model="formData.target"/>
-            </div>
+            <modal-steal-maker v-if="abilityType == EventTypes.steal"
+            :characters="dropdownCharacters" :user.sync="formData.user" :target.sync="formData.target" :target-item-or-ability.sync="formData.targetItemOrAbility" :is-ability.sync="formData.stealingAbility" :available-to-steal="itemsOrAbilities" :is-successful.sync="formData.isSuccessful" :immediate-confirm.sync="formData.immediateConfirm">
+            </modal-steal-maker>
 
-            <div v-if="selectedAbility.type == EventTypes.coerce">
-                <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> is attempting to Coerce  
-                <sui-dropdown :options="dropdownCharacters" placeholder="Target" search selection v-model="formData.target"/> into using a 
-                <sui-dropdown :options="dropdownAbilities" placeholder="Ability" search selection v-model="formData.targetItemOrAbility"/> on 
-                <sui-dropdown :options="dropdownCharacters" :placeholder="useAbilityOn" search selection v-model="formData.target"/>
-            </div>
+            <modal-coerce-maker v-if="abilityType == EventTypes.coerce"
+            :characters="dropdownCharacters" :user.sync="formData.user" :target.sync="formData.target" :abilities="dropdownAbilities" :is-successful.sync="formData.isSuccessful" :target-ability.sync="formData.targetItemOrAbility" :secondary-target.sync="formData.secondaryTarget" :immediate-confirm.sync="formData.immediateConfirm">
+            </modal-coerce-maker>
 
-            <div v-if="selectedAbility.type == EventTypes.truthtell">
-                <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> is requesting a truthtell on  
-                <sui-dropdown :options="dropdownCharacters" placeholder="Target" search selection v-model="formData.target"/>
-            </div>
+            <modal-truthtell-maker v-if="abilityType == EventTypes.truthtell"
+            :characters="dropdownCharacters" :user.sync="formData.user" :target.sync="formData.target" :question.sync="formData.question" :answer.sync="formData.answer" :immediate-confirm.sync="formData.immediateConfirm">
+            </modal-truthtell-maker>
 
-            <div class="ui form" v-if="selectedAbility.type == EventTypes.message">
-                <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> wants to send a message to
-                <sui-dropdown :options="dropdownCharacters" placeholder="Target" search selection v-model="formData.target"/>
-                <div class="field">
-                    <label>Message</label>
-                    <textarea rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 72px;"></textarea>
-                </div>
-            </div>
-
-            <div class="ui form" v-if="selectedAbility.type == EventTypes.announcement">
-                <sui-dropdown :options="dropdownCharacters" placeholder="User" search selection v-model="formData.user" id="user"/> wants an announcement made to all players.
-                <div class="field">
-                    <label>Message</label>
-                    <textarea rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 72px;"></textarea>
-                </div>
-            </div>
+            <modal-message-maker v-if="isMessage"
+            :characters="dropdownCharacters" :user.sync="formData.user" :target.sync="formData.target" :message.sync="formData.message" :is-private="abilityType == EventTypes.message" :immediate-confirm.sync="formData.immediateConfirm">
+            </modal-message-maker>
 
         </div>
     </div>
@@ -84,68 +53,113 @@
 <script>
 import { isEmpty } from "lodash";
 import EventTypes from "../EventTypes";
+
 import ModalKillSaveMaker from "./ModalKillSaveMaker.vue";
 import ModalProtectMaker from "./ModalProtectMaker.vue";
+import ModalSilenceMaker from "./ModalSilenceMaker.vue";
+import ModalStealMaker from "./ModalStealMaker.vue";
+import ModalCoerceMaker from "./ModalCoerceMaker.vue";
+import ModalTruthtellMaker from "./ModalTruthtellMaker.vue";
+import ModalMessageMaker from "./ModalMessageMaker.vue";
 
 export default {
     name: "ModalPageNewAbility",
     components: {
         ModalKillSaveMaker,
-        ModalProtectMaker
+        ModalProtectMaker,
+        ModalSilenceMaker,
+        ModalStealMaker,
+        ModalCoerceMaker,
+        ModalTruthtellMaker,
+        ModalMessageMaker
     },
     computed: {
         isSelection() {
-            return !(_.isEmpty(this.selectedAbility))
+            return !(isEmpty(this.selectedAbility))
         },
-        killOrSave() {
+        isKillOrSave() {
             return this.abilityType == EventTypes.kill || this.abilityType == EventTypes.save;
         },
-        isKill() {
-            return this.abilityType == EventTypes.kill;
-        },
-        useAbilityOn() {
-            return this.formData.targetItemOrAbility ? "Target of " + this.abilityNames[this.formData.targetItemOrAbility] : "Secondary Target";
-        },
-        saveLabel() {
-            return this.formData.amount == 1 ? "save" : "saves";
+        isMessage() {
+            return this.abilityType == EventTypes.message || this.abilityType == EventTypes.announcement;
         },
         selectedAbility() {
-            return this.abilties[this.abilityType] || {};
+            return this.abilities[this.abilityType] || {};
         },
         abilityNames() {
-            return this.abilties.map(ability => ability.text);
+            return this.$store.getters.abilityNames;
         },
         dropdownAbilities() {
-            return this.abilties.map(ability => ({
-                text: ability.name,
-                value: ability.type
-            }));
+            return this.$store.getters.dropdownAbilities;
         },
         dropdownItems() {
-            return this.$store.state.items.map(item => ({
-                text: item.name,
-                value: item.id
-            }));
+            return this.$store.getters.dropdownItems;
         },
         dropdownCharacters() {
-            return this.$store.state.characters.map(character => ({
-                text: character.name,
-                value: character.id
-            }));
+            return this.$store.getters.dropdownCharacters;
         },
         itemsOrAbilities() {
             return this.formData.stealingAbility ? this.dropdownAbilities : this.dropdownItems;
+        },
+        creatingNewEvent() {
+            return this.$store.state.newEvent;
         }
     },
-    methods: {
-        selectUser(event) {
-            this.formData.user = event;
-            this.test = event;
+    watch: {
+        creatingNewEvent() {
+            if (this.creatingNewEvent) {
+                const user = this.$store.state.characters[this.formData.user];
+                const target = this.$store.state.characters[this.formData.target];
+                let action = "";
+                let payload = payload = { user: user, target: target };
+                switch(this.abilityType) {
+                    case EventTypes.kill:
+                        action = 'addKill';
+                        break;
+                    case EventTypes.save:
+                        action = 'addSave';
+                        break;
+                    case EventTypes.protect:
+                        action = 'addProtect';
+                        break;
+                    case EventTypes.silence:
+                        action = 'addSilence';
+                        payload.topic = this.formData.topic;
+                        break;
+                    case EventTypes.steal:
+                        action = 'addProtect';
+                        payload.targetItemOrAbility = this.formData.targetItemOrAbility;
+                        payload.immediateConfirm = this.formData.immediateConfirm;
+                        payload.isSuccessful = this.formData.isSuccessful;
+                        break;
+                    case EventTypes.coerce:
+                        action = 'addCoerce';
+                        payload.targetAbility = this.formData.targetItemOrAbility;
+                        payload.immediateConfirm = this.formData.immediateConfirm;
+                        payload.isSuccessful = this.formData.isSuccessful;
+                        payload.secondaryTarget = this.formData.secondaryTarget;
+                        break;
+                    case EventTypes.truthtell:
+                        action = 'addProtect';
+                        payload.immediateConfirm = this.formData.immediateConfirm;
+                        payload.question = this.formData.question;
+                        payload.answer = this.formData.answer;
+                        break;
+                    case EventTypes.message:
+                    case EventTypes.announcement:
+                        action = 'addMessage';
+                        payload.immediateConfirm = this.formData.immediateConfirm;
+                        payload.message = this.formData.message;
+                        payload.answer = this.formData.answer;
+                        if (this.abilityType == EventTypes.announcement) { payload.target = "all Players" }
+                        break;
+                }
+                this.$store.dispatch(action, payload);
+            }
         }
     },
     data() {
         return {
-            test: 0,
             EventTypes: EventTypes,
             abilityType: null,
             formData: {
@@ -157,67 +171,12 @@ export default {
                 targetItemOrAbility: null,
                 secondaryTarget: null,
                 immediateConfirm: null,
-                isSuccessfull: null,
+                isSuccessful: null,
                 question: null,
                 answer: null,
                 message: null
             },
-            abilties: [
-                {
-                    name: "Kill", 
-                    type: EventTypes.kill, 
-                    description: "When a Player places a <strong>Kill</strong> on another player, the targeted player will be <i>dying</i> for the next 15 minutes. If the kill is not stopped by a Save or other ability, after 15 minutes, the player will have one final chance to be saved. If no-one saves them, the targeted player will <i>Die</i> and no longer be an active character in the mystery. A player can place multiple kills at once, and a target only needs to have one active kill on them to die.  Note, if a kill is placed on a target which is <i>protected</i>, the kill will be <i>blocked</i> and the target won't be affected.",
-                    icon: require("../assets/noun_733622_cc.svg")
-                },
-                {
-                    name: "Save", 
-                    type: EventTypes.save,
-                    description: "<strong>Save</strong> can be used on a player who is <i>dying</i> at least once. Using a save nullifies one kill on the target player.",
-                    icon: require("../assets/noun_1436968_cc.svg")
-                },
-                {
-                    name: "Protect",
-                    type: EventTypes.protect,
-                    description: "Using <strong>Protect</strong> on a player, <i>protects</i> from any kills placed on them for 15 minutes. Any kills placed on them are <i>blocked</i> and their affects are nullified. The <i>protected</i> player is not notified about if a protect is on them, nor any <i>blocked</i> kill attempts made on them. Players attempting to <strong>Kill</strong> a <i>protected</i> player will be notified that their kills failed.",
-                    icon: require("../assets/noun_904417_cc.svg")
-                },
-                {
-                    name: "Silence",
-                    type: EventTypes.silence,
-                    description: "Using <strong>Silence</strong> on a player, prohibits them from talking about a specific <i>topic</i> for 15 minutes. The target of the silence will be alerted when the silence starts, ends and the prohibited <i>topic</i>.",
-                    icon: require("../assets/noun_1476127_cc.svg")
-                },
-                {
-                    name: "Steal",
-                    type: EventTypes.steal,
-                    description: "Players request a <strong>Steal</strong> on another player and state the item/ability they are attempting to steal, the host will then return to them with the result. If <i>successful</i>, the target item/ability is added to the user of <strong>Steal</strong>. If <i>unsuccessful</i>, they have one more attempt to steal something from a player. After the second attempt, regardless of the outcome, the <strong>Steal</strong> is used up.",
-                    icon: require("../assets/noun_1368_cc.svg")
-                },
-                {
-                    name: "Coerce",
-                    type: EventTypes.coerce,
-                    description: "Players request a <strong>Coerce</strong> on another player, stating the ability they want the target of the <strong>Coerce</strong> to use, and the player for them to use it on. The host will then return to them with the result. If <i>successful</i>, the target ability will be used by the target of the coerce on a specified player. If <i>unsuccessful</i>, they have one more attempt to <strong>Coerce</strong>. After the second attempt, regardless of the outcome, the <strong>Coerce</strong> is used up.",
-                    icon: require("../assets/noun_1160993_cc.svg")
-                },
-                {
-                    name: "Truthtell",
-                    type: EventTypes.truthtell,
-                    description: "The user of <strong>Truthtell</strong> can ask the player can ask one question to a player of their choice, supervised by a host. The target of the <strong>Truthell</strong> must deliver an objectively truthful answer. The host can ask the target to give a clearer or more truthful answer if they believe the answer given is inadequate or objectively false.",
-                    icon: require("../assets/noun_15280.svg")
-                },
-                {
-                    name: "Message",
-                    type: EventTypes.message,
-                    description: "A player requests a <strong>Secret Message</strong> to be sent to a specified player. The message is delivered privately to target, and they are not informed of who sent the message.",
-                    icon: require("../assets/noun_1788527_cc.svg")
-                },
-                {
-                    name: "Announcement",
-                    type: EventTypes.announcement,
-                    description: "A player requests an <strong>Anonymous Announcement</strong> to be made to all players. An announcement is delievered by a host on behalf of the player, and the source of the annoncement is said to originate from an anonymous alias.",
-                    icon: require("../assets/noun_144092_cc.svg")
-                },
-            ]
+            abilities: this.$store.state.abilities
         }
     }   
 }
@@ -233,7 +192,15 @@ export default {
 }
 
 #amount-input, #target {
-    margin-left: 4px;
+    margin-left: 8px;
+}
+
+#checkbox-confirm {
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+.success, .field {
+    margin-bottom: 4px;
 }
 </style>
 

@@ -2,8 +2,7 @@ import ConfirmationAbilityEvent from "../ConfirmationAbilityEvent.js"
 import EventTypes from "../../../EventTypes.js"
 
 export default class Coerce extends ConfirmationAbilityEvent {
-    constructor(id, user, coerceTargetPlayer, requestTime, isActive = true, confirmationTime,
-         coerceTargetAbility, abilityTargetPlayer) {
+    constructor(id, user, coerceTargetPlayer, coerceTargetAbility, abilityTargetPlayer, requestTime, confirmationTime = "", isActive = true) {
         super(id, EventTypes.coerce, user, coerceTargetPlayer, requestTime, isActive, confirmationTime);
         this.coerceTargetAbility = coerceTargetAbility;
         this.abilityTargetPlayer = abilityTargetPlayer;

@@ -6,9 +6,9 @@
         </div>
         <div class="content">
             <div class="date">{{ event.startTime }}</div>
-            <div class="summary" v-if="event.isActive"><a href="#">{{ event.user }}</a> is attempting to steal {{ prefix + tryingToSteal}} from <a href="#">{{ event.target }}</a></div>
-            <div class="summary" v-else-if="event.isSuccessful"><a href="#">{{ event.user }}</a> successfully stole {{ prefix + tryingToSteal}} from <a href="#">{{ event.target }}</a></div>
-            <div class="summary" v-else>Unsuccessful Steal attempt from <a href="#">{{ event.user }}</a> trying to steal {{ prefix + tryingToSteal}} from <a href="#">{{ event.target }}</a></div>
+            <div class="summary" v-if="event.isActive"><a href="#">{{ event.user.name }}</a> is attempting to steal {{ prefix + tryingToSteal}} from <a href="#">{{ event.target.name }}</a></div>
+            <div class="summary" v-else-if="event.isSuccessful"><a href="#">{{ event.user.name }}</a> successfully stole {{ prefix + tryingToSteal}} from <a href="#">{{ event.target.name }}</a></div>
+            <div class="summary" v-else>Unsuccessful Steal attempt from <a href="#">{{ event.user.name }}</a> trying to steal {{ prefix + tryingToSteal}} from <a href="#">{{ event.target.name }}</a></div>
             <!-- if >0, show as accordion -->
         </div>
   </div>
@@ -33,20 +33,20 @@ export default {
     },
     computed: {
         isItem() {
-            return this.event.goal.constructor === Item;
+            return this.event.targetItemOrAbility.constructor === Item;
         },
         prefix() {
             if (this.isItem) {
                 //todo: check if one of many
                 return "the ";
-            } else if (isVowel(this.event.goal[0])) {
+            } else if (isVowel(this.event.targetItemOrAbility[0])) {
                 return "an ";
             } else {
                 return "a ";
             }
         },
         tryingToSteal() {
-            return this.event.goal.name || this.event.goal;
+            return this.event.targetItemOrAbility.name || this.event.targetItemOrAbility;
         },
     }
 

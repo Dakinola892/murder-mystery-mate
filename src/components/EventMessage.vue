@@ -8,8 +8,8 @@
         </div>
         <div class="content">
             <div class="date">{{ event.startTime }}</div>
-            <div class="summary" v-if="event.isActive"><a href="#">{{ event.user }}</a> would like to {{ requestType }} {{ messageType }} to <a href="#">{{ event.target }}</a></div>
-            <div class="summary" v-else>{{ messageType }} from <a href="#">{{ event.user }}</a> successfully delivered to <a href="#">{{ event.target }}</a></div>
+            <div class="summary" v-if="event.isActive"><a href="#">{{ event.user.name }}</a> would like to {{ requestType }} {{ messageType }} to <a href="#">{{ event.target.name }}</a></div>
+            <div class="summary" v-else>{{ messageType }} from <a href="#">{{ event.user.name }}</a> successfully delivered to <a href="#">{{ event.target.name }}</a></div>
             <div class="extra text">Message: {{ event.message }}</div> 
             <!-- font awesome speech marks -->
         </div>

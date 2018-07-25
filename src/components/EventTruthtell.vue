@@ -6,13 +6,14 @@
         </div>
         <div class="content">
             <div class="date">{{ event.startTime }}</div>
-            <div class="summary" v-if="event.isActive"><a href="#">{{ event.user }}</a> is requesting a Truthtell on <a href="#">{{ event.target }}</a></div>
-            <div class="summary" v-else><a href="#">{{ event.user }}</a> used Truthtell on <a href="#">{{ event.target }}</a></div>
+            <div class="summary" v-if="event.isActive"><a href="#">{{ event.user.name }}</a> is requesting a Truthtell on <a href="#">{{ event.target.name }}</a></div>
+            <div class="summary" v-else><a href="#">{{ event.user.name }}</a> used Truthtell on <a href="#">{{ event.target.name }}</a></div>
             <div class="extra text" v-if="event.question && event.answer">
-                <!-- font-awesome question marks -->
+                <i class="quote left icon"></i>
                 Question: {{ event.question }} ?
                 <br>
                 Answer: {{ event.answer }}
+                <i class="quote right icon"></i>
             </div>
         </div>
   </div>
@@ -29,11 +30,7 @@ export default {
             type: Truthtell,
             required: true
         }
-    },
-    computed: {
-        
     }
-
 }
 </script>
 

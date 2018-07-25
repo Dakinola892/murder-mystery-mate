@@ -1,7 +1,7 @@
 <template>
-    <div class="ui center aligned container">
+    <sui-modal-content class="ui center aligned scrolling container">
         <component :is="currentPage"></component>
-    </div>
+    </sui-modal-content>
 </template>
 
 <script>
@@ -22,8 +22,10 @@ export default {
             type: Number,
             default: 0
         }, 
-        postType: {
-            type: Object
+        postType: Object,
+        confirm: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {

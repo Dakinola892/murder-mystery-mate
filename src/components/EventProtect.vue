@@ -6,8 +6,8 @@
         </div>
         <div class="content">
             <div class="date">{{ event.startTime }}</div>
-            <div class="summary" v-if="event.isActive">Active Protect on <a href="#">{{ event.target }}</a> provided by <a href="#">{{ event.user }}</a></div>
-            <div class="summary" v-else>Protect used by <a href="#">{{ event.user }}</a> on <a href="#">{{ event.target }}</a></div>
+            <div class="summary" v-if="event.isActive">Active Protect on <a href="#">{{ event.target.name }}</a> provided by <a href="#">{{ event.user.name }}</a></div>
+            <div class="summary" v-else>Protect used by <a href="#">{{ event.user.name }}</a> on <a href="#">{{ event.target.name }}</a></div>
             <div class="extra text">Kills Blocked: {{ event.blockedKills.length }} </div>
             <!-- if >0, show as accordion -->
         </div>
@@ -26,7 +26,6 @@ export default {
             required: true
         }
     }
-
 }
 </script>
 

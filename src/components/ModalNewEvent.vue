@@ -1,21 +1,22 @@
 <template>
     <sui-modal @clickAwayModal="$emit('closeModal')" :open="open">
         <modal-page-selector :post-type="postType" @page-change="currentPage = $event" ></modal-page-selector>
-        <sui-modal-content>
-            <modal-page-content :post-type="postType" :page-num="currentPage"></modal-page-content>
-        </sui-modal-content>
+        <modal-page-content :post-type="postType" :page-num="currentPage" :confirm="confirmed"></modal-page-content>
+        <modal-page-actions></modal-page-actions>
     </sui-modal>
 </template>
 
 <script>
 import ModalPageSelector from "./ModalPageSelector.vue";
 import ModalPageContent from "./ModalPageContent.vue";
+import ModalPageActions from "./ModalPageActions.vue";
 
 export default {
-    
+    name: "ModalNewEvent",
     components: {
         ModalPageSelector,
-        ModalPageContent
+        ModalPageContent,
+        ModalPageActions
     },
     props: {
         open: {
@@ -36,7 +37,7 @@ export default {
         }
     },
     methods: {
-        confirm() {
+        confirmInChild() {
             this.confirmed = true,
             this.showModal = false
         }

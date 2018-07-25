@@ -6,10 +6,9 @@
         </div>
         <div class="content">
             <div class="date">{{ event.startTime }}</div>
-            <div class="summary" v-if="event.isActive">Active Silence on <a href="#">{{ event.target }}</a> provided by <a href="#">{{ event.user }}</a></div>
-            <div class="summary" v-else>Silence used by <a href="#">{{ event.user }}</a> on <a href="#">{{ event.target }}</a></div>
-            <div class="extra text">Unable to talk about: "{{ event.topic }}" </div>
-            <!-- if >0, show as accordion -->
+            <div class="summary" v-if="event.isActive">Active Silence on <a href="#">{{ event.target.name }}</a> provided by <a href="#">{{ event.user.name }}</a></div>
+            <div class="summary" v-else>Silence used by <a href="#">{{ event.user.name }}</a> on <a href="#">{{ event.target.name }}</a></div>
+            <div class="extra text">{{ unable }} to talk about: "{{ event.topic }}" </div>
         </div>
   </div>
 </template>
@@ -24,6 +23,11 @@ export default {
         event: {
             type: Silence,
             required: true
+        }
+    },
+    computed: {
+        unable() {
+            return this.event.isActive ? "Unable" : "Was unable"
         }
     }
 }

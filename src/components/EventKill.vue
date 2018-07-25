@@ -6,7 +6,9 @@
         </div>
         <div class="content">
             <div class="date">{{ event.startTime }}</div>
-            <div class="summary"> <span v-html="headlineMessage"></span></div>
+            <div class="summary">  
+                {{ killType }} on <a>{{ event.target.name }}</a> by <a>{{ event.user.name }}</a>
+            </div>
             <div class="extra text"><a>{{ outcomeMessage }}</a> </div>
         </div>
   </div>
@@ -17,7 +19,7 @@ import Kill from "../models/events/abilities/Kill";
 import Save from "../models/events/abilities/Save";
 import Protect from "../models/events/abilities/Protect";
 import Death from "../models/events/Death";
-import {isEmpty} from "../../node_modules/lodash/isEmpty.js"
+import {isEmpty} from "lodash"
 
 const ACTIVE_KILL = 0;
 const SAVED_KILL = 1;
@@ -42,7 +44,7 @@ export default {
     computed: {
         state() {
             let outcomeEvent = this.event.outcome;
-            if (outcomeEvent === {}) { return ACTIVE_KILL; }
+            if (isEmpty(outcomeEvent)) { return ACTIVE_KILL; }
 
             switch(outcomeEvent.constructor) {
                 case Save:
@@ -58,29 +60,32 @@ export default {
         outcomeMessage() {
             switch(this.state) {
                 case SAVED_KILL:
-                    return `Saved by ${this.event.outcome.user}`;
+                    return `Saved by ${this.event.outcome.user.name}`;
                 case PROTECTED_KILL:
-                    return `Protected by ${this.event.outcome.user}`;
+                    return `Protected by ${this.event.outcome.user.name}`;
                 case FATAL_KILL:
-                    let otherKillers = event.accomplices ? ` and ${event.accomplices}` : "";
-                    return `Killed by ${event.murderer}` + otherKillers;
+                    var otherKillers = this.event.accomplices ? ` and ${this.accompliceNames}` : "";
+                    return `Killed by ${this.event.user.name}` + otherKillers;
                 case FAILED_KILL:
-                    return `Stopped by ${this.event.outcome.user}`;
+                    return `Stopped by ${this.event.outcome.user.name}`;
                 default:
                     return "";
             }
         },
-        headlineMessage() {
+        killType() {
             switch(this.state) {
                 case ACTIVE_KILL:
-                    return `Kill placed on <strong>${this.event.target}</strong> by <strong>${this.event.user}</strong>`;
+                    return "Kill placed";
                 case PROTECTED_KILL:
-                    return `Blocked Kill on <strong>${this.event.target}</strong> by <strong>${this.event.user}</strong>`;
+                    return "Blocked Kill"
                 case FATAL_KILL:
-                    return `Fatal Kill on <strong>${this.event.target}</strong>`;
+                    return "Fatal Kill";
                 default:
-                    return `Attempted Kill on <strong>${this.event.target}</strong> by <strong>${this.event.user}</strong>`;
+                    return "Attempted Kill";
             }
+        }, 
+        accompliceNames() {
+            return this.event.accomplices.map(killer => killer.name).join(',');
         }
     }
 }
